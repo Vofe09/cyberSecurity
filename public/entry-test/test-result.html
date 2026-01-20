@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Результаты теста</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    :root {
+      --bg-light: #e6f8f7;
+      --blue-main: #4fd1c5;
+      --blue-light: #76e0d1;
+      --blue-hover: #a0f0ea;
+      --text-dark: #1e293b;
+      --green-accent: #34d399;
+      --warning-accent: #facc15;
+      --blue-dark: #1f7a73;
+      --soft-blue: #d0f8f5;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body {
+      background: var(--bg-light);
+      color: var(--text-dark);
+      min-height: 100vh;
+    }
+
+    /* ---------- TOP BAR ---------- */
+    .top-bar {
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60%;
+      margin-top: 10px;
+      background-color: var(--blue-main);
+      padding: 18px;
+      border-radius: 30px;
+      text-align: center;
+      font-weight: 700;
+      font-size: 20px;
+      color: white;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 1000;
+    }
+
+    main {
+        max-width: 900px;
+        margin: 140px auto 80px;
+        padding: 0 20px;
+
+        display: flex;
+        flex-direction: column; /* ВАЖНО */
+        align-items: center;    /* центр по горизонтали */
+        gap: 32px;              /* ОТСТУП МЕЖДУ КАРТОЧКАМИ */
+      }
+
+
+    /* ---------- CARD ---------- */
+    .card {
+      background: white;
+      border-radius: 24px;
+      padding: 40px;
+      width: 100%;
+      max-width: 480px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+      text-align: center;
+    }
+
+    .card h1 {
+      margin-bottom: 24px;
+      font-size: 26px;
+    }
+
+    /* ---------- GAUGE ---------- */
+    .gauge-wrapper {
+      width: 280px;
+      height: 140px;
+      overflow: hidden;
+      margin: 30px auto;
+    }
+
+    .gauge {
+      --value: 0;          /* 0–180 */
+      --gauge-color: var(--blue-main);
+
+      width: 280px;
+      height: 280px;
+      border-radius: 50%;
+      background:
+        conic-gradient(
+          var(--gauge-color) calc(var(--value) * 1deg),
+          #e5e7eb 0
+        );
+      transform: rotate(-90deg);
+      transition: background 1s ease;
+      position: relative;
+    }
+
+    .gauge-center {
+      position: absolute;
+      inset: 24px;
+      background: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding-bottom: 26px;
+      transform: rotate(90deg);
+    }
+
+    .gauge-center span {
+      font-size: 36px;
+      font-weight: 700;
+    }
+
+    /* ---------- STATS ---------- */
+    .stats {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 24px;
+      font-size: 15px;
+    }
+
+    .stats div {
+      background: var(--soft-blue);
+      padding: 10px 14px;
+      border-radius: 14px;
+      width: 48%;
+    }
+
+    .description {
+      margin-top: 28px;
+      font-size: 15px;
+      color: #475569;
+    }
+
+        /* ---------- PIE ---------- */
+    .pie-section {
+      margin-top: 40px;
+    }
+
+    .pie-section h2 {
+      font-size: 20px;
+      margin-bottom: 20px;
+    }
+
+    .pie-wrapper {
+      width: 220px;
+      height: 220px;
+      margin: 0 auto 20px;
+    }
+
+    .pie {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: #e5e7eb;
+      transition: background 1s ease;
+    }
+
+    .legend {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 14px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .legend-color {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+    }
+
+  </style>
+</head>
+
+<body>
+
+<div class="top-bar">
+  cyberAware
+</div>
+
+<main>
+  <div class="card">
+    <h1>Твой результат</h1>
+
+    <div class="gauge-wrapper">
+      <div class="gauge" id="gauge">
+        <div class="gauge-center">
+          <span id="percentText">0%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div>✔ Правильных: <strong id="correctCount">0</strong></div>
+      <div>✖ Неправильных: <strong id="wrongCount">0</strong></div>
+    </div>
+
+    <div class="description" id="resultText">
+      Результат будет интерпретирован после прохождения теста.
+    </div>
+</div>
+<div class="card">
+        <!-- ===== PIE CHART ===== -->
+    <div class="pie-section">
+      <h2>Где были ошибки</h2>
+
+      <div class="pie-wrapper">
+        <div class="pie" id="pieChart"></div>
+      </div>
+
+      <div class="legend" id="pieLegend"></div>
+    </div>
+
+  </div>
+</main>
+
+<script>
+/* =====================================================
+   ВРЕМЕННАЯ ЗАГЛУШКА
+   ↓↓↓
+   ПОТОМ ЗАМЕНИМ НА ДАННЫЕ ИЗ index.html (localStorage)
+   ===================================================== */
+
+const resultModel = JSON.parse(
+  localStorage.getItem("cyberAware:testResult")
+);
+
+if (!resultModel) {
+  // защита от прямого захода
+  window.location.href = "index.html";
+}
+
+
+/* =====================================================
+   ЛОГИКА ОТОБРАЖЕНИЯ
+   ===================================================== */
+
+const percent = Math.round((resultModel.correct / resultModel.total) * 100);
+const gauge = document.getElementById("gauge");
+const percentText = document.getElementById("percentText");
+const correctEl = document.getElementById("correctCount");
+const wrongEl = document.getElementById("wrongCount");
+const resultText = document.getElementById("resultText");
+
+/* цвет по уровню */
+let color = "#34d399";
+let text = "Хорошая цифровая гигиена.";
+
+if (percent < 40) {
+  color = "#f87171";
+  text = "Критический уровень защиты. Рекомендуется начать обучение с базовых тем.";
+} else if (percent < 65) {
+  color = "#facc15";
+  text = "Есть уязвимости. Некоторые привычки стоит пересмотреть.";
+} else if (percent < 85) {
+  color = "#4fd1c5";
+  text = "Неплохой уровень, но есть зоны для улучшения.";
+}
+
+/* применение */
+gauge.style.setProperty("--value", percent * 1.8); // 180° = 100%
+gauge.style.setProperty("--gauge-color", color);
+
+percentText.textContent = percent + "%";
+correctEl.textContent = resultModel.correct;
+wrongEl.textContent = resultModel.incorrect;
+resultText.textContent = text;
+
+
+
+resultModel.errorsByCategory = {
+  Фишинг: 3,
+  Пароли: 1,
+  "Публичный Wi-Fi": 2
+};
+
+/* Цвета категорий */
+const categoryColors = {
+  Фишинг: "#facc15",
+  Пароли: "#4fd1c5",
+  "Публичный Wi-Fi": "#fb7185",
+  Финансы: "#60a5fa"
+};
+
+const pie = document.getElementById("pieChart");
+const legend = document.getElementById("pieLegend");
+
+const errors = resultModel.errorsByCategory;
+const totalErrors = Object.values(errors).reduce((a, b) => a + b, 0);
+
+if (totalErrors === 0) {
+  pie.style.background = "#e5e7eb";
+  legend.innerHTML = "<p>Ошибок не обнаружено 🎉</p>";
+} else {
+  let currentPercent = 0;
+  const slices = [];
+
+  Object.entries(errors).forEach(([category, count]) => {
+    const percent = (count / totalErrors) * 100;
+    const color = categoryColors[category] || "#94a3b8";
+
+    slices.push(
+      `${color} ${currentPercent}% ${currentPercent + percent}%`
+    );
+
+    currentPercent += percent;
+
+    /* легенда */
+    const item = document.createElement("div");
+    item.className = "legend-item";
+    item.innerHTML = `
+      <span class="legend-color" style="background:${color}"></span>
+      ${category} — ${count}
+    `;
+    legend.appendChild(item);
+  });
+
+  pie.style.background = `conic-gradient(${slices.join(", ")})`;
+}
+</script>
+
+</body>
+</html>

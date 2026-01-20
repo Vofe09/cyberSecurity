@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Входное тестирование</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    :root {
+      --bg-light: #e6f8f7;
+      --blue-main: #4fd1c5;
+      --blue-light: #76e0d1;
+      --blue-hover: #a0f0ea;
+      --text-dark: #1e293b;
+      --green-accent: #34d399;
+      --warning-accent: #facc15;
+      --blue-dark: #1f7a73;
+      --soft-blue: #d0f8f5;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body {
+      background: var(--bg-light);
+      color: var(--text-dark);
+      min-height: 100vh;
+    }
+
+    /* ---------- HEADER ---------- */
+    header {
+        position: fixed;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60%;
+        margin-top: 10px;
+        background-color: var(--blue-main);
+        padding: 20px;
+        border-radius: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        z-index: 1000;
+    }
+
+
+    nav {
+        display: flex;
+        gap: 20px;
+    }
+
+    nav a {
+        color: white;
+        text-decoration: none;
+        background-color: var(--blue-light);
+        padding: 10px 20px;
+        border-radius: 20px;
+        transition: 0.3s ease;
+        opacity: 0;
+        transform: translateY(-10px);
+        animation: fadeIn 0.6s forwards;
+        font-weight: bold;
+    }
+
+    nav a:hover {
+        background-color: var(--blue-hover);
+    }
+
+    /* Плавное появление кнопок */
+    nav a:nth-child(1) { animation-delay: 0.3s; }
+    nav a:nth-child(2) { animation-delay: 0.45s; }
+    nav a:nth-child(3) { animation-delay: 0.6s; }
+    nav a:nth-child(4) { animation-delay: 0.75s; }
+    nav a:nth-child(5) { animation-delay: 1.0s; }
+    nav a:nth-child(6) { animation-delay: 1.25s; }
+    
+    @keyframes fadeIn {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+
+    /* ---------- MAIN ---------- */
+    main {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    .intro {
+      margin-bottom: 32px;
+    }
+
+    .intro h1 {
+      font-size: 28px;
+      margin-bottom: 12px;
+    }
+
+    .intro p {
+      color: #475569;
+      line-height: 1.5;
+    }
+
+    /* ---------- QUESTION CARD ---------- */
+    .question-card {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    }
+
+    .question-text {
+      font-size: 18px;
+      margin-bottom: 20px;
+    }
+
+    .answers {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .answer-btn {
+      padding: 14px;
+      border-radius: 12px;
+      border: 2px solid var(--soft-blue);
+      background: var(--soft-blue);
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      text-align: center;
+    }
+
+    .answer-btn:hover {
+      background: var(--blue-hover);
+    }
+
+    .answer-btn.selected {
+      border-color: var(--blue-main);
+      background: var(--blue-main);
+      color: white;
+    }
+
+    /* ---------- FOOTER ACTION ---------- */
+    .actions {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 32px;
+    }
+
+    button {
+      padding: 14px 24px;
+      border-radius: 12px;
+      border: none;
+      background: var(--blue-dark);
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      background: #94a3b8;
+      cursor: not-allowed;
+    }
+
+    /* ---------- PROGRESS ---------- */
+    .progress {
+      margin-bottom: 24px;
+      font-size: 14px;
+      color: #475569;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+    <nav>
+        <a href="#" class="lighter">О нас</a>
+        <a href="#">Входное тестирование</a>
+        <a href="#">Обучение</a>
+        <a href="#"> Повторение </a>
+        <a href="#"> Игра </a>
+        <a href="#"> Профиль </a>
+    </nav>
+</header>
+
+<main>
+  <div class="intro">
+    <h1>Насколько ты защищён в интернете?</h1>
+  </div>
+
+  <div class="progress" id="progress"></div>
+
+  <div class="question-card">
+    <div class="question-text" id="questionText"></div>
+    <div class="answers">
+      <div class="answer-btn" data-value="-1">Не согласен</div>
+      <div class="answer-btn" data-value="0">Зависит от ситуации</div>
+      <div class="answer-btn" data-value="1">Согласен</div>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button id="prevBtn">Назад</button>
+    <button id="nextBtn" disabled>Далее</button>
+  </div>
+</main>
+
+<script>
+  const questions = [
+    "Я использую разные пароли для важных и неважных сервисов.",
+    "Для хранения паролей я использую менеджер паролей или встроенные средства браузера.",
+    "Перед тем как перейти по ссылке из письма или сообщения, я обычно проверяю отправителя или адрес ссылки.",
+    "Если сообщение требует срочных действий, я сначала перепроверяю информацию, а потом действую.",
+    "Я знаю, какие личные данные и посты в моих соцсетях доступны посторонним.",
+    "Я обращаю внимание на то, какие данные запрашивает приложение или сайт перед регистрацией.",
+    "Если источник файла вызывает сомнения, я предпочитаю отказаться от загрузки, даже если файл мне нужен.",
+    "Я понимаю, какие действия нужно предпринять, если мой аккаунт будет взломан.",
+    "Я стараюсь не входить в важные аккаунты, находясь в публичной Wi-Fi сети.",
+    "Я готов отказаться от подключения к бесплатному Wi-Fi, если есть сомнения в его безопасности.",
+    "Если устройство работает стабильно, я могу откладывать обновления системы.",
+    "На моих устройствах включена блокировка экрана.",
+    "Перед вводом данных банковской карты я проверяю адрес сайта и способ оплаты.",
+    "Я не сохраняю данные банковской карты на сайтах, которым полностью не доверяю.",
+    "Я сознательно ограничиваю количество сервисов, где у меня есть аккаунты.",
+    "Я считаю, что удобство иногда важнее максимальной безопасности."
+  ];
+
+  let current = 0;
+  const correctAnswers = [
+  1,  // 1
+  1,  // 2
+  1,  // 3
+  1,  // 4
+  1,  // 5
+  1,  // 6
+  -1, // 7
+  1,  // 8
+  1,  // 9
+  -1, // 10
+  -1, // 11
+  1,  // 12
+  1,  // 13
+  -1, // 14
+  -1, // 15
+  0   // 16
+];
+
+  const answers = new Array(questions.length).fill(null);
+
+  const questionText = document.getElementById("questionText");
+  const progress = document.getElementById("progress");
+  const answerButtons = document.querySelectorAll(".answer-btn");
+  const nextBtn = document.getElementById("nextBtn");
+  const prevBtn = document.getElementById("prevBtn");
+
+  function render() {
+    questionText.textContent = questions[current];
+    progress.textContent = `Вопрос ${current + 1} из ${questions.length}`;
+
+    answerButtons.forEach(btn => {
+      btn.classList.remove("selected");
+      if (answers[current] === btn.dataset.value) {
+        btn.classList.add("selected");
+      }
+    });
+
+    nextBtn.disabled = answers[current] === null;
+    prevBtn.disabled = current === 0;
+  }
+
+  answerButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      answers[current] = btn.dataset.value;
+      render();
+    });
+  });
+
+  nextBtn.addEventListener("click", () => {
+    if (current < questions.length - 1) {
+      current++;
+      render();
+    } else {
+  let correct = 0;
+  let incorrect = 0;
+
+  answers.forEach((answer, index) => {
+    if (answer === null) return;
+
+    if (Number(answer) === correctAnswers[index]) {
+      correct++;
+    } else if (Number(answer) !== 0) {
+      incorrect++;
+    }
+  });
+
+  const resultModel = {
+    total: questions.length,
+    correct,
+    incorrect,
+      errorsByCategory: {
+    phishing: 3,
+    passwords: 1,
+    wifi: 2
+      }
+  };
+
+  localStorage.setItem(
+    "cyberAware:testResult",
+    JSON.stringify(resultModel)
+  );
+
+  window.location.href = "test-result.html";
+}
+  });
+
+  prevBtn.addEventListener("click", () => {
+    if (current > 0) {
+      current--;
+      render();
+    }
+  });
+
+  render();
+</script>
+
+</body>
+</html>
