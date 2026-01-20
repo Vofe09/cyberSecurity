@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Обучение — cyberAware</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    :root {
+      --bg-light: #e6f8f7;
+      --blue-main: #4fd1c5;
+      --blue-light: #76e0d1;
+      --blue-hover: #a0f0ea;
+      --text-dark: #1e293b;
+      --soft-blue: #d0f8f5;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, sans-serif;
+    }
+
+    body {
+      background: var(--bg-light);
+      color: var(--text-dark);
+      min-height: 100vh;
+    }
+
+    /* ---------- HEADER ---------- */
+    header {
+        position: fixed;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60%;
+        margin-top: 10px;
+        background-color: var(--blue-main);
+        padding: 20px;
+        border-radius: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        z-index: 1000;
+    }
+
+
+    nav {
+        display: flex;
+        gap: 20px;
+    }
+
+    nav a {
+        color: white;
+        text-decoration: none;
+        background-color: var(--blue-light);
+        padding: 10px 20px;
+        border-radius: 20px;
+        transition: 0.3s ease;
+        opacity: 0;
+        transform: translateY(-10px);
+        animation: fadeIn 0.6s forwards;
+        font-weight: bold;
+    }
+
+    nav a:hover {
+        background-color: var(--blue-hover);
+    }
+
+    /* Плавное появление кнопок */
+    nav a:nth-child(1) { animation-delay: 0.3s; }
+    nav a:nth-child(2) { animation-delay: 0.45s; }
+    nav a:nth-child(3) { animation-delay: 0.6s; }
+    nav a:nth-child(4) { animation-delay: 0.75s; }
+    nav a:nth-child(5) { animation-delay: 1.0s; }
+    nav a:nth-child(6) { animation-delay: 1.25s; }
+    
+    @keyframes fadeIn {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+
+    /* ---------- LAYOUT ---------- */
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 24px;
+      max-width: 1200px;
+      margin: 140px auto 60px;
+      padding: 0 20px;
+    }
+
+    /* ---------- CONTENT ---------- */
+    .content {
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+      min-height: 400px;
+    }
+
+    .content h1 {
+      margin-bottom: 16px;
+    }
+
+    .content p {
+      color: #475569;
+      line-height: 1.6;
+    }
+
+    /* ---------- SIDEBAR ---------- */
+    .sidebar {
+      background: white;
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+      max-height: calc(100vh - 180px);
+      overflow-y: auto;
+    }
+
+    .chapter {
+      margin-bottom: 20px;
+    }
+
+    .chapter-title {
+      font-weight: 700;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+
+    .lesson {
+      padding: 8px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 14px;
+      margin-bottom: 6px;
+      background: var(--soft-blue);
+      transition: background 0.2s;
+    }
+
+    .lesson:hover {
+      background: var(--blue-hover);
+    }
+
+    .lesson.active {
+      background: var(--blue-main);
+      color: white;
+      font-weight: 600;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+    <nav>
+        <a href="#" class="lighter">О нас</a>
+        <a href="#">Входное тестирование</a>
+        <a href="#">Обучение</a>
+        <a href="#"> Повторение </a>
+        <a href="#"> Игра </a>
+        <a href="#"> Профиль </a>
+    </nav>
+</header>
+
+<div class="layout">
+
+  <!-- ===== CONTENT ===== -->
+  <div class="content" id="lessonContent">
+    <h1>Выберите урок</h1>
+    <p>
+      Справа находится список тем и уроков.  
+      Выберите любой урок, чтобы начать обучение.
+    </p>
+  </div>
+
+  <!-- ===== SIDEBAR ===== -->
+  <div class="sidebar" id="sidebar">
+    <div class="chapter">
+      <div class="chapter-title">1. Фишинг</div>
+      <div class="lesson" data-lesson="phishing-1">1.1 Мобильный фишинг</div>
+      <div class="lesson" data-lesson="phishing-2">1.2 Почтовый фишинг</div>
+      <div class="lesson" data-lesson="phishing-3">1.3 Фейковые сайты</div>
+    </div>
+
+    <div class="chapter">
+      <div class="chapter-title">2. Пароли</div>
+      <div class="lesson" data-lesson="passwords-1">2.1 Слабые пароли</div>
+      <div class="lesson" data-lesson="passwords-2">2.2 Менеджеры паролей</div>
+    </div>
+
+    <div class="chapter">
+      <div class="chapter-title">3. Публичные сети</div>
+      <div class="lesson" data-lesson="wifi-1">3.1 Опасности Wi-Fi</div>
+      <div class="lesson" data-lesson="wifi-2">3.2 VPN и защита</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ===== ВРЕМЕННЫЙ КОНТЕНТ (ПОТОМ ЗАМЕНИМ) ===== */
+const lessonsContent = {
+  "phishing-1": {
+    title: "Мобильный фишинг",
+    text: "Мобильный фишинг — это попытка обмана через SMS, мессенджеры и приложения."
+  },
+  "phishing-2": {
+    title: "Почтовый фишинг",
+    text: "Фишинговые письма маскируются под официальные уведомления."
+  },
+  "phishing-3": {
+    title: "Фейковые сайты",
+    text: "Поддельные сайты копируют дизайн настоящих сервисов."
+  },
+  "passwords-1": {
+    title: "Слабые пароли",
+    text: "Простые пароли легко подбираются автоматическими атаками."
+  },
+  "passwords-2": {
+    title: "Менеджеры паролей",
+    text: "Менеджеры позволяют хранить сложные уникальные пароли."
+  },
+  "wifi-1": {
+    title: "Опасности Wi-Fi",
+    text: "Открытые сети могут перехватывать трафик."
+  },
+  "wifi-2": {
+    title: "VPN и защита",
+    text: "VPN шифрует соединение в небезопасных сетях."
+  }
+};
+
+/* ===== ЛОГИКА ПЕРЕКЛЮЧЕНИЯ ===== */
+const lessonEls = document.querySelectorAll(".lesson");
+const content = document.getElementById("lessonContent");
+
+lessonEls.forEach(lesson => {
+  lesson.addEventListener("click", () => {
+    lessonEls.forEach(l => l.classList.remove("active"));
+    lesson.classList.add("active");
+
+    const key = lesson.dataset.lesson;
+    const data = lessonsContent[key];
+
+    content.innerHTML = `
+      <h1>${data.title}</h1>
+      <p>${data.text}</p>
+    `;
+  });
+});
+</script>
+
+</body>
+</html>
