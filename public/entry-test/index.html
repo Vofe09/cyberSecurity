@@ -328,6 +328,24 @@
   -1, // 15
   0   // 16
 ];
+const questionCategories = [
+  "Фишинг",          // 1
+  "Пароли",          // 2
+  "Фишинг",          // 3
+  "Фишинг",          // 4
+  "Приватность",     // 5
+  "Приватность",     // 6
+  "Загрузки",        // 7
+  "Восстановление",  // 8
+  "Публичный Wi-Fi", // 9
+  "Публичный Wi-Fi", // 10
+  "Обновления",      // 11
+  "Устройства",     // 12
+  "Финансы",         // 13
+  "Финансы",         // 14
+  "Аккаунты",        // 15
+  "Баланс"           // 16
+];
 
   const answers = new Array(questions.length).fill(null);
 
@@ -364,29 +382,34 @@
       current++;
       render();
     } else {
-  let correct = 0;
-  let incorrect = 0;
+let correct = 0;
+let incorrect = 0;
+const errorsByCategory = {};
 
-  answers.forEach((answer, index) => {
-    if (answer === null) return;
 
-    if (Number(answer) === correctAnswers[index]) {
-      correct++;
-    } else if (Number(answer) !== 0) {
-      incorrect++;
-    }
-  });
+answers.forEach((answer, index) => {
+  if (answer === null) return;
 
-  const resultModel = {
-    total: questions.length,
-    correct,
-    incorrect,
-      errorsByCategory: {
-    phishing: 3,
-    passwords: 1,
-    wifi: 2
-      }
-  };
+  const isCorrect = Number(answer) === correctAnswers[index];
+
+  if (isCorrect) {
+    correct++;
+  } else {
+    incorrect++;
+
+    const category = questionCategories[index];
+    errorsByCategory[category] = (errorsByCategory[category] || 0) + 1;
+  }
+});
+
+
+const resultModel = {
+  total: questions.length,
+  correct,
+  incorrect,
+  errorsByCategory
+};
+
 
   localStorage.setItem(
     "cyberAware:testResult",

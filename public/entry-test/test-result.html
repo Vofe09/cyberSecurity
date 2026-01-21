@@ -339,11 +339,8 @@
 </main>
 
 <script>
-/* =====================================================
-   ВРЕМЕННАЯ ЗАГЛУШКА
-   ↓↓↓
-   ПОТОМ ЗАМЕНИМ НА ДАННЫЕ ИЗ index.html (localStorage)
-   ===================================================== */
+
+
 
 const resultModel = JSON.parse(
   localStorage.getItem("cyberAware:testResult")
@@ -405,13 +402,6 @@ correctEl.textContent = resultModel.correct;
 wrongEl.textContent = resultModel.incorrect;
 resultText.textContent = text;
 
-
-
-resultModel.errorsByCategory = {
-  Фишинг: 3,
-  Пароли: 1,
-  "Публичный Wi-Fi": 2
-};
 
 /* Цвета категорий */
 const categoryColors = {
