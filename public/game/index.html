@@ -202,11 +202,11 @@ function handleAnswer(btn, index) {
 
 /* ===== ПЕРЕХОД ===== */
 nextBtn.addEventListener("click", () => {
-  if (correctCount >= 3) {
-    alert("Мини-игра начинается 🎮");
-    // тут позже будет переход в mini-game state
+    if (correctCount >= 3) {
+    window.location.href = "mini-game.html";
     return;
-  }
+    }
+
 
   current++;
 
