@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Повторение — cyberAware</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    :root {
+    --bg-light: #e6f8f7;       /* очень светлый бирюзовый фон */
+    --blue-main: #4fd1c5;      /* пастельно-бирюзовый основной */
+    --blue-light: #76e0d1;     /* более светлый для второстепенных элементов */
+    --blue-hover: #a0f0ea;     /* hover эффект */
+    --text-dark: #1e293b;      /* текст — оставим тёмный для контраста */
+    --green-accent: #34d399;   /* мягкий зелёный для успехов */
+    --warning-accent: #facc15; /*  жёлтый для предупреждений */
+    --blue-dark: #1f7a73; /* тёмный бирюзовый */
+    --soft-blue: #d0f8f5; /* приятный такой */
+    --green: #34d399;
+    --red: #f87171;
+    --text-dark: #1e293b;
+}
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, sans-serif;
+    }
+
+    body {
+      background: var(--bg-light);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-dark);
+    }
+
+    .card-container {
+    width: 100%;
+    max-width: 360px;
+    height: 520px; /* ↑ вертикальная */
+    position: relative;
+    }
+
+        /* ---------- HEADER ---------- */
+    header {
+        position: fixed;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60%;
+        margin-top: 10px;
+        background-color: var(--blue-main);
+        padding: 20px;
+        border-radius: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        z-index: 1000;
+    }
+
+
+    nav {
+        display: flex;
+        gap: 20px;
+    }
+
+    nav a {
+        color: white;
+        text-decoration: none;
+        background-color: var(--blue-light);
+        padding: 10px 20px;
+        border-radius: 20px;
+        transition: 0.3s ease;
+        opacity: 0;
+        transform: translateY(-10px);
+        animation: fadeIn 0.6s forwards;
+        font-weight: bold;
+    }
+
+    nav a:hover {
+        background-color: var(--blue-hover);
+    }
+
+    /* Плавное появление кнопок */
+    nav a:nth-child(1) { animation-delay: 0.3s; }
+    nav a:nth-child(2) { animation-delay: 0.45s; }
+    nav a:nth-child(3) { animation-delay: 0.6s; }
+    nav a:nth-child(4) { animation-delay: 0.75s; }
+    nav a:nth-child(5) { animation-delay: 1.0s; }
+    nav a:nth-child(6) { animation-delay: 1.25s; }
+    
+    @keyframes fadeIn {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+
+
+    .card {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: white;
+      border-radius: 24px;
+      padding: 32px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-size: 18px;
+      font-weight: 500;
+      padding: 36px;
+      cursor: grab;
+      user-select: none;
+      transition: transform 0.3s ease, background 0.3s ease;
+    }
+
+    .card.correct {
+      background: var(--green);
+      color: white;
+    }
+
+    .card.wrong {
+      background: var(--red);
+      color: white;
+    }
+
+    .hint {
+      position: absolute;
+      bottom: -50px;
+      width: 100%;
+      text-align: center;
+      font-size: 14px;
+      color: #475569;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+    <nav>
+        <a href="#" class="lighter">О нас</a>
+        <a href="#">Входное тестирование</a>
+        <a href="#">Обучение</a>
+        <a href="#"> Повторение </a>
+        <a href="#"> Игра </a>
+        <a href="#"> Профиль </a>
+    </nav>
+</header>
+
+<div class="card-container">
+  <div class="card" id="card">
+    Я могу спокойно вводить пароли, находясь в публичном Wi-Fi.
+  </div>
+  <div class="hint">
+    Свайп вправо — согласен · влево — не согласен
+  </div>
+</div>
+
+<script>
+/* ===== КЕЙСЫ (ПОТОМ ЗАМЕНИМ / РАСШИРИМ) ===== */
+const cards = [
+  { text: "Я могу вводить пароли в публичном Wi-Fi.", correct: false },
+  { text: "Лучше использовать разные пароли для разных сайтов.", correct: true },
+  { text: "Срочные сообщения чаще всего безопасны.", correct: false },
+  { text: "Двухфакторная аутентификация повышает защиту аккаунта.", correct: true }
+];
+
+let index = 0;
+const card = document.getElementById("card");
+
+let startX = 0;
+let currentX = 0;
+let isDragging = false;
+
+/* ===== ЗАГРУЗКА КАРТОЧКИ ===== */
+function loadCard() {
+  card.className = "card";
+  card.style.transform = "translateX(0)";
+  card.textContent = cards[index].text;
+}
+
+/* ===== СВАЙП ===== */
+card.addEventListener("pointerdown", e => {
+  startX = e.clientX;
+  isDragging = true;
+  card.setPointerCapture(e.pointerId);
+});
+
+card.addEventListener("pointermove", e => {
+  if (!isDragging) return;
+  currentX = e.clientX - startX;
+  card.style.transform = `translateX(${currentX}px) rotate(${currentX / 15}deg)`;
+});
+
+card.addEventListener("pointerup", () => {
+  isDragging = false;
+
+  if (Math.abs(currentX) > 120) {
+    const userAgreed = currentX > 0;
+    const isCorrect = userAgreed === cards[index].correct;
+
+    card.classList.add(isCorrect ? "correct" : "wrong");
+    card.style.transform = `translateX(${userAgreed ? 600 : -600}px)`;
+
+    setTimeout(() => {
+      index++;
+      if (index < cards.length) {
+        loadCard();
+      } else {
+        card.textContent = "Повторение завершено 🎉";
+        card.className = "card";
+        card.style.transform = "translateX(0)";
+      }
+    }, 500);
+  } else {
+    card.style.transform = "translateX(0)";
+  }
+
+  currentX = 0;
+});
+
+/* ===== INIT ===== */
+loadCard();
+</script>
+
+</body>
+</html>

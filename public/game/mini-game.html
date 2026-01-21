@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<title>Mini Game — Treasure Catch</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<style>
+:root {
+  --bg-light: #e6f8f7;
+  --blue-main: #4fd1c5;
+  --green: #34d399;
+  --red: #f87171;
+  --text-dark: #1e293b;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: system-ui, sans-serif;
+}
+
+body {
+  background: var(--bg-light);
+  height: 100vh;
+  overflow: hidden;
+}
+
+.top {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  padding: 12px 24px;
+  border-radius: 20px;
+  display: flex;
+  gap: 24px;
+  font-weight: 600;
+  box-shadow: 0 10px 25px rgba(0,0,0,.15);
+  z-index: 10;
+}
+
+.game-area {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.item {
+  position: absolute;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  cursor: pointer;
+  user-select: none;
+  animation: pop 0.2s ease;
+}
+
+@keyframes pop {
+  from { transform: scale(0); }
+  to { transform: scale(1); }
+}
+
+.good {
+  background: var(--green);
+}
+
+.bad {
+  background: var(--red);
+}
+</style>
+</head>
+
+<body>
+
+<div class="top">
+  <div>⏱ <span id="time">30</span>s</div>
+  <div>⭐ Очки: <span id="score">0</span></div>
+</div>
+
+<div class="game-area" id="game"></div>
+
+<script>
+/* ==========================
+   НАСТРОЙКИ
+========================== */
+const GAME_TIME = 30;
+
+let spawnIntervalMs = 900;   // медленно в начале
+let minSpawnInterval = 350; // быстрее этого не будет
+
+let baseDuration = 2200;    // медленный полёт в начале
+let minDuration = 900;      // максимальная скорость
+
+const treasures = ["💎", "🔷", "🟢"]; // алмаз, рубин, изумруд
+const traps = ["☠️", "🦴"];
+
+const correctSound = new Audio("sounds/correct.mp3");
+const incorrectSound = new Audio("sounds/incorrect.mp3");
+
+// уменьшим задержку
+correctSound.preload = "auto";
+incorrectSound.preload = "auto";
+
+
+/* ==========================
+   СОСТОЯНИЕ
+========================== */
+let score = 0;
+let timeLeft = GAME_TIME;
+let gameInterval;
+let spawnInterval;
+
+const game = document.getElementById("game");
+const scoreEl = document.getElementById("score");
+const timeEl = document.getElementById("time");
+
+/* ==========================
+   СПАВН ОБЪЕКТА
+========================== */
+function spawnItem() {
+  const item = document.createElement("div");
+  item.classList.add("item");
+
+  const isGood = Math.random() > 0.35;
+  item.classList.add(isGood ? "good" : "bad");
+  item.textContent = isGood
+    ? treasures[Math.floor(Math.random() * treasures.length)]
+    : traps[Math.floor(Math.random() * traps.length)];
+
+  const fromLeft = Math.random() > 0.5;
+  const startX = fromLeft ? -60 : window.innerWidth + 60;
+  const endX = fromLeft ? window.innerWidth + 60 : -60;
+
+  const startY = window.innerHeight - 100;
+  const peakY = Math.random() * (window.innerHeight / 2);
+
+const duration =
+  baseDuration + Math.random() * 300;
+
+  const startTime = performance.now();
+
+  function animate(time) {
+    const t = (time - startTime) / duration;
+    if (t >= 1) {
+      item.remove();
+      return;
+    }
+
+    const x = startX + (endX - startX) * t;
+    const y =
+      startY -
+      4 * (startY - peakY) * t * (1 - t); // парабола
+
+    item.style.transform = `translate(${x}px, ${y}px)`;
+    requestAnimationFrame(animate);
+  }
+
+ item.addEventListener("pointerdown", () => {
+  if (isGood) {
+    score += 2;
+    correctSound.currentTime = 0;
+    correctSound.play();
+  } else {
+    score -= 2;
+    incorrectSound.currentTime = 0;
+    incorrectSound.play();
+  }
+
+  scoreEl.textContent = score;
+  item.remove();
+});
+
+
+  game.appendChild(item);
+  requestAnimationFrame(animate);
+}
+function spawnLoop() {
+  spawnItem();
+
+  spawnInterval = setTimeout(() => {
+    if (timeLeft > 0) {
+      spawnLoop();
+    }
+  }, spawnIntervalMs);
+}
+
+
+/* ==========================
+   ТАЙМЕР
+========================== */
+function startGame() {
+  spawnLoop();
+
+  gameInterval = setInterval(() => {
+    
+    timeLeft--;
+    timeEl.textContent = timeLeft;
+
+    if (timeLeft <= 0) {
+      endGame();
+    }
+  }, 1000);
+}
+
+
+function endGame() {
+  clearInterval(gameInterval);
+  clearInterval(spawnInterval);
+  game.innerHTML = "";
+
+  alert(`Игра окончена! Очки: ${score}`);
+  // тут потом возврат в квиз / результат
+}
+
+/* ==========================
+   START
+========================== */
+startGame();
+</script>
+
+</body>
+</html>
