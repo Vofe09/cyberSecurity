@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>awarely - main</title>
+    <link rel="stylesheet" href="style.css"> 
+
+   
+</head>
+
+<body>
+
+    <!-- ======= ХЕДЕР ======= -->
+    <header>
+        <nav>
+            <a href="https://unit-med.vercel.app/" class="lighter">О нас</a>
+            <a href="https://med-forum-2.vercel.app/forum">Форум</a>
+            <a href="https://unit-med.vercel.app/conference/index.html">Конференции</a>
+            <a href="https://unit-med.vercel.app/materials/index.html"> Материалы </a>
+            <a href="https://unit-med.vercel.app/test/index.html"> Тесты </a>
+            <a href="https://med-forum-2.vercel.app/profile"> Профиль </a>
+        </nav>
+    </header>
+    
+
+    <!-- ======= HERO ======= -->
+    <section class="hero">
+        <div class="hero-card">
+            <img src="medical_bg.jpg" alt="medical bg">
+            <h1>Платформа для изучения Кибербезопасности среди студентов и школьников.</h1>
+        </div>
+
+        <div class="hero-card">
+            <h1> <i> AWARELY </i> — осознанность в цифровом мире.</h1>
+            <p class="hero-text">
+                это образовательная платформа, которая помогает понять, как работают цифровые угрозы, научиться распознавать риски и формировать устойчивые привычки безопасного поведения в интернете. Мы не пугаем и не перегружаем теорией — мы показываем реальные сценарии, объясняем простым языком и закрепляем знания через практику, тесты и интерактивные форматы.
+            </p>
+        </div>
+    </section>
+
+    <section class="benefits">
+        <div class="benefits-header">
+            Наши преимущества ;)
+        </div>
+        <div class="benefits-items">
+            <div class="benefit-item">
+                <h2>Интерактивное запоминание</h2>
+                <p>Пользователь не читает — он взаимодействует: отвечает, играет, реагирует. Это закрепляет навыки, а не просто информацию.</p>
+            </div>
+          
+            <div class="benefit-item">
+                <h2>Обучающая ценность</h2>
+                <p>Каждый элемент платформы построен вокруг реальных ситуаций и привычек, с которыми человек сталкивается в интернете ежедневно. </p>
+            </div>
+
+            <div class="benefit-item">
+                <h2>Удобная навигация</h2>
+                <p>Чёткая структура и минимализм позволяют сосредоточиться на обучении без перегрузки и лишних действий.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="carousel-container">
+    <!-- Глобальные стрелки -->
+    <button class="global-btn global-prev">&#10094;</button>
+    <button class="global-btn global-next">&#10095;</button>
+
+        <div class="carousel-track" id="track">
+
+            <!-- Карточки -->
+            <div class="carousel-card">
+                <img src="forum-image.jpg" alt="medical">
+                <h1>Входное тестирование</h1>
+                <p>Помогает выявить сильные и слабые стороны студента перед обучением.</p>
+            </div>
+
+            <div class="carousel-card">
+                <img src="conference-image.jpg" alt="conference">
+                <h1>Обучение</h1>
+                <p>Запоминающиеся уроки с раскрытым материалом.</p>
+            </div>
+
+            <div class="carousel-card">
+                <img src="materials-image.jpg" alt="materials">
+                <h1>Мини-игры</h1>
+                <p>Мини-игры на реакцию и внимание, которые помогают запоминать через действие.</p>
+            </div>
+
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>Awarely - это не про страх перед интернетом. Это про понимание, осознанность и контроль в цифровом мире.</p>
+    </footer>
+
+</body>
+
+<script>
+(function(){
+  const container = document.querySelector('.carousel-container');
+  const track = document.querySelector('.carousel-track');
+  let cards = Array.from(track.querySelectorAll('.carousel-card'));
+  const btnNext = document.querySelector('.global-next');
+  const btnPrev = document.querySelector('.global-prev');
+  let currentIndex = 0;
+  let isAnimating = false;
+  const gap = parseFloat(getComputedStyle(track).gap) || 0;
+
+  // Обновляем список карточек (на случай динамических изменений)
+  function refreshCards() {
+    cards = Array.from(track.querySelectorAll('.carousel-card'));
+  }
+
+  // Центрируем карточку с индексом i
+  function centerCardByIndex(i, animate = true) {
+    if (i < 0) i = 0;
+    if (i > cards.length - 1) i = cards.length - 1;
+    currentIndex = i;
+    const containerRect = container.getBoundingClientRect();
+    const containerCenter = containerRect.left + containerRect.width / 2;
+
+    // Получаем карточку
+    const card = cards[currentIndex];
+    const cardRect = card.getBoundingClientRect();
+    const cardCenter = cardRect.left + cardRect.width / 2;
+
+    // Текущий translate трека (парсим transform matrix)
+    const style = window.getComputedStyle(track);
+    const transform = style.transform === 'none' ? 'none' : style.transform;
+    let currentTranslate = 0;
+    if (transform !== 'none') {
+      const matrix = new DOMMatrixReadOnly(transform);
+      currentTranslate = matrix.m41; // translateX
+    }
+
+    // Нужно сдвинуть трек так, чтобы cardCenter совпал с containerCenter
+    // Разница: положительное значение -> сдвинуть влево (негативный translate)
+    const delta = cardCenter - containerCenter;
+    const newTranslate = currentTranslate - delta;
+
+    // Применяем трансформ (с анимацией через CSS transition)
+    if (!animate) {
+      const prevTransition = track.style.transition;
+      track.style.transition = 'none';
+      track.style.transform = `translateX(${newTranslate}px)`;
+      // Форс перерисовка
+      track.getBoundingClientRect();
+      track.style.transition = prevTransition || '';
+    } else {
+      track.style.transform = `translateX(${newTranslate}px)`;
+    }
+
+    // Toggle active class
+    cards.forEach((c, idx) => c.classList.toggle('active', idx === currentIndex));
+  }
+
+  // Кнопки
+  if (btnNext) btnNext.addEventListener('click', () => {
+    if (isAnimating) return;
+    currentIndex = (currentIndex + 1) % cards.length;
+    centerCardByIndex(currentIndex);
+  });
+
+  if (btnPrev) btnPrev.addEventListener('click', () => {
+    if (isAnimating) return;
+    currentIndex = (currentIndex - 1 + cards.length) % cards.length;
+    centerCardByIndex(currentIndex);
+  });
+
+  // Свайпы (простая реализация)
+  (function addTouch() {
+    let startX = 0;
+    let startTime = 0;
+    track.addEventListener('touchstart', e => {
+      startX = e.touches[0].clientX;
+      startTime = Date.now();
+    }, {passive: true});
+    track.addEventListener('touchend', e => {
+      const endX = (e.changedTouches && e.changedTouches[0]) ? e.changedTouches[0].clientX : 0;
+      const dx = startX - endX;
+      const dt = Date.now() - startTime;
+      // чувствительность
+      if (Math.abs(dx) > 40 && dt < 1000) {
+        if (dx > 0) currentIndex = Math.min(cards.length - 1, currentIndex + 1);
+        else currentIndex = Math.max(0, currentIndex - 1);
+        centerCardByIndex(currentIndex);
+      }
+    }, {passive: true});
+  })();
+
+  // Обрабатываем ресайз: пересчитываем центр
+  window.addEventListener('resize', () => {
+    // небольшой debounce
+    clearTimeout(window._carouselResizeTimer);
+    window._carouselResizeTimer = setTimeout(() => {
+      refreshCards();
+      centerCardByIndex(currentIndex, false);
+    }, 80);
+  });
+
+  // Инициализация: обнуляем трансформ и центрируем начальную карточку
+  function init() {
+    // Убираем любые предыдущие трансформации
+    track.style.transform = 'translateX(0px)';
+    // дёргаем перерисовку, затем центрируем
+    requestAnimationFrame(() => {
+      refreshCards();
+      centerCardByIndex(currentIndex, false);
+    });
+  }
+
+  // Ждём DOM ready (если скрипт подключён внизу, это лишнее, но безопасно)
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+
+</html>
