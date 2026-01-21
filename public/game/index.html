@@ -157,6 +157,14 @@ const questionText = document.getElementById("questionText");
 const answersEl = document.getElementById("answers");
 const progress = document.getElementById("progress");
 const nextBtn = document.getElementById("nextBtn");
+const savedQuestionIndex =
+  localStorage.getItem("cyberAware:returnToQuestion");
+
+if (savedQuestionIndex !== null) {
+  current = Number(savedQuestionIndex);
+  localStorage.removeItem("cyberAware:returnToQuestion");
+}
+
 
 /* ===== ЗАГРУЗКА ВОПРОСА ===== */
 function loadQuestion() {
@@ -203,7 +211,7 @@ function handleAnswer(btn, index) {
 /* ===== ПЕРЕХОД ===== */
 nextBtn.addEventListener("click", () => {
     if (correctCount >= 3) {
-    window.location.href = "/mini-game.html";
+    window.location.href = "/game/mini-game.html";
     return;
     }
 

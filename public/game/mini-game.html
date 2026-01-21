@@ -215,9 +215,15 @@ function endGame() {
   clearInterval(spawnInterval);
   game.innerHTML = "";
 
-  alert(`Игра окончена! Очки: ${score}`);
-  // тут потом возврат в квиз / результат
+  // сохраняем, с какого вопроса продолжать
+  localStorage.setItem(
+    "cyberAware:returnToQuestion",
+    "3" // ← например, продолжить с 4-го вопроса (индекс)
+  );
+
+  window.location.href = "/game/index.html";
 }
+
 
 /* ==========================
    START
