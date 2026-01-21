@@ -178,6 +178,79 @@
       font-size: 14px;
       color: #475569;
     }
+
+    /* =========================
+   MOBILE OPTIMIZATION
+========================= */
+@media (max-width: 768px) {
+
+            header {
+                width: 90%;
+                padding: 15px;
+            }
+
+            nav {
+                flex-direction: row; /* оставляем горизонтально */
+                flex-wrap: wrap;     /* чтобы кнопки переносились, если места мало */
+                gap: 10px;
+                justify-content: center;
+            }
+
+            nav a {
+                padding: 8px 12px;
+                font-size: 16px;
+                flex: 1 1 auto; /* чтобы кнопки адаптировались */
+            }
+
+  /* ---------- MAIN ---------- */
+  main {
+    margin: 110px auto 24px;
+    padding: 0 12px;
+  }
+
+  .intro h1 {
+    font-size: 22px;
+    text-align: center;
+  }
+
+  /* ---------- QUESTION CARD ---------- */
+  .question-card {
+    padding: 18px;
+  }
+
+  .question-text {
+    font-size: 16px;
+  }
+
+  /* Ответы — в колонку */
+  .answers {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .answer-btn {
+    padding: 14px 12px;
+    font-size: 15px;
+  }
+
+  /* ---------- ACTIONS ---------- */
+  .actions {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .actions button {
+    width: 100%;
+    font-size: 15px;
+  }
+
+  /* ---------- PROGRESS ---------- */
+  .progress {
+    text-align: center;
+    font-size: 13px;
+  }
+}
+
   </style>
 </head>
 
